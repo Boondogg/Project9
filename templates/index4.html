@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Forms with Output Container</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        table {
+            font-size: 8px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .form-container {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 45%;
+        }
+        .form-container label {
+            display: inline-block;
+            width: calc(50% - 3.5cm);
+        }
+        #output-container {
+            border: 1px solid #000;
+            padding: 15px;
+            margin-top: 5px;
+        }
+        .form-container button {
+            margin-top: 10px;
+        }
+        #first-column-values {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Forms</h1>
+    <div class="container">
+        <!-- Form 1 -->
+        <form class="form-container" id="form1" action="/submit_form1" method="post">
+            <h2>User Ship Names</h2>
+            <div class="form-group">
+                <label for="name1">Ship 1 :</label>
+                <input type="text" id="name1" name="name1" required>
+            </div>
+            <div class="form-group">
+                <label for="name2">Ship 2 :</label>
+                <input type="text" id="name2" name="name2">
+            </div>
+            <div class="form-group">
+                <label for="name3">Ship 3 :</label>
+                <input type="text" id="name3" name="name3">
+            </div>
+            <div class="form-group">
+                <label for="name4">Ship 4 :</label>
+                <input type="text" id="name4" name="name4">
+            </div>
+            <div class="form-group">
+                <label for="name5">Ship 5 :</label>
+                <input type="text" id="name5" name="name5">
+            </div>
+            <div class="form-group">
+                <label for="name6">Ship 6 :</label>
+                <input type="text" id="name6" name="name6">
+            </div>
+            <div class="form-group">
+                <label for="name7">Ship 7 :</label>
+                <input type="text" id="name7" name="name7">
+            </div>
+            <div class="form-group">
+                <label for="name8">Ship 8 :</label>
+                <input type="text" id="name8" name="name8">
+            </div>
+            <div class="form-group">
+                <label for="name9">Ship 9 :</label>
+                <input type="text" id="name9" name="name9">
+            </div>
+            <div class="form-group">
+                <label for="name10">Ship 10 :</label>
+                <input type="text" id="name10" name="name10">
+            </div>
+            <button type="submit">Submit</button>
+	</form>
+        <!-- Form 2 -->
+        <form class="form-container" id="form2" onsubmit="return handleSubmit(event, 'form2')" method="post" enctype="multipart/form-data">
+            <h1 class="mb-4">Upload a Text File</h1>
+            <div class="form-group">
+                <input type="file" name="file" class="form-control-file">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+    <!-- Output Container -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded File Content</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .LightYellow { background-color: LightYellow; }
+        .PapayaWhip { background-color: PapayaWhip; }
+        .Moccasin { background-color: Moccasin; }
+        .PaleGoldenrod { background-color: PaleGoldenrod; }
+        .Khaki { background-color: Khaki; }
+        .Lavender { background-color: Lavender; }
+        .LightCyan { background-color: LightCyan; }
+        .PaleTurquoise { background-color: PaleTurquoise; }
+        .LightBlue { background-color: LightBlue; }
+        .Cornsilk { background-color: Cornsilk; }
+    </style>
+</head>
+<body>
+    <div id="output-container">
+        <h2 class="mt-5">Uploaded File Content</h2>
+        <div class="container mt-1">
+            <div class="table-responsive mt-2">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Ship</th>
+                            <th>Weapon</th>
+                            <th>TotalDmg</th>
+                            <th>AvgDmg</th>
+                            <th>Count</th>
+                            <th>GrazesDmg</th>
+                            <th>GrazesCount</th>
+                            <th>AttacksDmg</th>
+                            <th>AttacksCount</th>
+                            <th>CriticalsDmg</th>
+                            <th>CriticalsCount</th>
+                            <th>SplashesDmg</th>
+                            <th>SplashesCount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                            <tr class="{% for i, name in enumerate(shipnames) %}{% if row[0] == name %}{{ colours[i] }}{% endif %}{% endfor %}">
+                                {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
