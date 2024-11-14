@@ -194,14 +194,21 @@ def calc_stats(df, shipnames):
         if filtered_df.empty:
             continue  # Skip the ship if there are no records
 
-        unique_values = filtered_df['Ship'].unique().tolist()
-
+        total_damage = filtered_df['TotalDmg'].sum()
+        total_count = filtered_df['count'].sum()
+        print(f'Total damage for {Ship1}: {total_damage}')
+        print(f'Total count for {Ship1}: {total_count}')
 
 
 
 
     print('print 4')
     print(df)
+
+
+
+
+
     return df
 
 app = Flask(__name__)
