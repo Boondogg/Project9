@@ -1,4 +1,4 @@
-Put your HTML text here<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,9 +19,9 @@ Put your HTML text here<!DOCTYPE html>
             padding: 15px;
             width: 45%;
         }
-        .form-container label { 
-            display: inline-block; 
-            width: calc(50% - 3.5cm); 
+        .form-container label {
+            display: inline-block;
+            width: calc(50% - 3.5cm);
         }
         #output-container {
             border: 1px solid #000;
@@ -30,6 +30,7 @@ Put your HTML text here<!DOCTYPE html>
         }
         .form-container button {
             margin-top: 10px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -80,7 +81,9 @@ Put your HTML text here<!DOCTYPE html>
                 <input type="text" id="name10" name="name10">
             </div>
             <button type="submit">Submit</button>
+            <button type="button" onclick="clearFormData(event)">Clear</button>
         </form>
+
         <!-- Form 2 -->
         <form class="form-container" id="form2" onsubmit="return handleSubmit(event, 'form2')" method="post" enctype="multipart/form-data">
             <h1 class="mb-4">Upload a Text File</h1>
@@ -92,4 +95,3 @@ Put your HTML text here<!DOCTYPE html>
     </div>
 </body>
 </html>
-
