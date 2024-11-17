@@ -1,3 +1,5 @@
+import math
+
 from flask import Flask, request, render_template, redirect, url_for
 import logging
 import pandas as pd
@@ -80,11 +82,12 @@ def clean_data(df):
     return df
 
 def calc_stats(df, shipnames):
+    print('print 1')
     df.drop(columns=df.columns[0], axis=1, errors='ignore', inplace=True)
     headers = ['Ship', "Att_Type", 'OtherAtt', 'HullDmg', 'ShieldDmg', 'TotalDmg', 'Weapon', 'ID']
     df = pd.DataFrame(df, columns=headers)
     df = df.drop(columns=['HullDmg', 'ShieldDmg', 'OtherAtt'])
-
+    print('print 1.1')
     # Iterate through the DataFrame rows
     for i in range(len(df)):
 
@@ -93,7 +96,7 @@ def calc_stats(df, shipnames):
             if df.iloc[i]['Ship'] == df.iloc[i - 1]['Ship']:
                 # df.at[i, 'splash_check2'] = 'Yes'
                 df.at[i, 'Weapon'] = df.iloc[i - 1]['Weapon']
-
+    print('print 1.2')
     df = df[~df["Ship"].str.contains("DESTROYED", case=False, na=False)]
     df = df[~df["Ship"].str.contains("wormhole", case=False, na=False)]
     df = df[~df["Ship"].str.contains("XP", case=False, na=False)]
@@ -102,47 +105,65 @@ def calc_stats(df, shipnames):
     df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
 
     df =df[df['Weapon'].str.len() > 0]
-
+    print('print 1.3')
     # =================================================
     # Convert DataFrame to List of Lists
-    list_of_lists = df.values.tolist()
+    # list_of_lists = df.values.tolist()
 
     # Write the List of Lists to a .py File
-    with open('ListofLists.py', 'w') as file:
-        file.write('list_of_lists = ' + str(list_of_lists))
+    # with open('ListofLists.py', 'w') as file:
+        # file.write('list_of_lists = ' + str(list_of_lists))
 
 
     # ================================================
     # ================================================
     # Copy DataFrame
-    df_copy = df.copy()
-
+    #df_copy = df.copy()
+    #print('print 1.4')
     # Write the copied DataFrame to a .py file
-    with open('CopiedDataFrame.py', 'w') as file:
-        file.write("import pandas as pd\n\n")
-        file.write("data = [\n")
-        for row in df_copy.values.tolist():
-            file.write(f"    {row},\n")
-        file.write("]\n\n")
-        file.write("headers = ['Ship', 'Att_Type', 'TotalDmg', 'Weapon']\n\n")
-        file.write("df_copy = pd.DataFrame(data, columns=headers)\n")
+    #with open('CopiedDataFrame.py', 'w') as file:
+        #file.write("import pandas as pd\n\n")
+        #file.write("data = [\n")
+        #for row in df_copy.values.tolist():
+            #file.write(f"    {row},\n")
+        #file.write("]\n\n")
+        #file.write("headers = ['Ship', 'Att_Type', 'TotalDmg', 'Weapon']\n\n")
+        #file.write("df_copy = pd.DataFrame(data, columns=headers)\n")
 
 
     # ================================================
     # Initialize a list to store results for all ships
-    df2 = df
     all_ships_results = []
-    #print('print 3.2')
-    print(df)
+    all_ships_results2 = []
+    print('print 2.1')
     for Ship1 in shipnames:
         # Filter the DataFrame for the current ship and remove rows with blank 'Weapon' values
         filtered_df = df[(df['Ship'] == Ship1) & df['Weapon'].notna()]
         if filtered_df.empty:
             continue  # Skip the ship if there are no records
-        #print(filtered_df)
+
+
+        # Calculate the total damage, average damage, and count for the current ship
+        total_dmg = filtered_df['TotalDmg'].sum()
+        count = filtered_df.shape[0]
+        avg_dmg = total_dmg // count if count > 0 else 0
+
+        # Filter the DataFrame to include only the ships in shipnames
+        perc_dmg_df = df[df['Ship'].isin(shipnames)]
+
+        # Calculate the total damage for the filtered ships
+        total_damage_all_ships = perc_dmg_df['TotalDmg'].sum()
+
+        # Calculate the percentage for each ship
+        perc_dmg = math.ceil((total_dmg / total_damage_all_ships) * 100)
+        perc_dmg_str = f"{int(perc_dmg)}%"
+        print('print 3')
+        # Store the results in a list
+        all_ships_results2.append([Ship1, total_dmg, count, avg_dmg, perc_dmg_str])
+
         # Get unique weapon values, excluding blanks
-        unique_values = filtered_df['Weapon'].unique().tolist()
-        remove_blanks = [item for item in unique_values if item]
+        # unique_values = filtered_df['Weapon'].unique().tolist()
+        # remove_blanks = [item for item in unique_values if item]
 
         # Initialize a dictionary to store results for each weapon
         weapon_stats = {}
@@ -164,6 +185,7 @@ def calc_stats(df, shipnames):
             stats['avg_dmg'] = stats['total_dmg'] // stats['count'] if stats['count'] > 0 else 0
             weapon_stats[weapon] = stats
 
+
         # Create a list of results for the current ship
         results_list = [
             [
@@ -181,35 +203,16 @@ def calc_stats(df, shipnames):
         ]
 
         all_ships_results.extend(results_list)
+        # Create a list of results for the current ship
 
     # Create a new DataFrame from the combined results
     columns = ['Ship', 'Weapon', 'Tot_Dmg', 'Tot_Cnt', 'Avg_Dmg',
                'Gz_Dmg', 'Gz_Cnt', 'Att_Dmg', 'Att_Cnt',
                'Crit_Dmg', 'Crit_Cnt', 'Spl_Dmg', 'Spl_Cnt']
     df = pd.DataFrame(all_ships_results, columns=columns)
+    df2 = pd.DataFrame(all_ships_results2, columns=['Ship', 'TotalDmg', 'count', 'AvgDmg', '% Dmg' ])
 
-    for Ship1 in shipnames:
-        # Filter the DataFrame for the current ship and remove rows with blank 'Weapon' values
-        filtered_df = df2[(df2['Ship'] == Ship1)]
-        if filtered_df.empty:
-            continue  # Skip the ship if there are no records
-
-        total_damage = filtered_df['TotalDmg'].sum()
-        total_count = filtered_df['count'].sum()
-        print(f'Total damage for {Ship1}: {total_damage}')
-        print(f'Total count for {Ship1}: {total_count}')
-
-
-
-
-    print('print 4')
-    print(df)
-
-
-
-
-
-    return df
+    return df, df2
 
 app = Flask(__name__)
 
@@ -226,23 +229,12 @@ def index():
 @app.route('/submit_form1', methods=['POST'])
 def submit_form1():
     # Get form data
-    form_data = [
-        request.form.get('name1'),
-        request.form.get('name2'),
-        request.form.get('name3'),
-        request.form.get('name4'),
-        request.form.get('name5'),
-        request.form.get('name6'),
-        request.form.get('name7'),
-        request.form.get('name8'),
-        request.form.get('name9'),
-        request.form.get('name10')
-    ]
-    # Store the form data in the list
+    form_data = [request.form.get(f'name{i}') for i in range(1, 11)]
     shipnames.extend(form_data)
-
     print(shipnames)
+
     return redirect(url_for('upload_file'))
+
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -264,14 +256,21 @@ def upload_file():
         df = pd.DataFrame(lines, columns=['Heading1'])
 
         clean_data(df)
-        df = calc_stats(df, shipnames)
-        # df2 = calc_stats(df, shipnames)
+        print('print 4')
+        print(df)
+
+        df, df2 = calc_stats(df, shipnames)
+        print('print 5')
+        print(df)
+        print(df2)
 
         # Converting to HTML Table
         uploaded_df_html = df.to_html(classes='table table-bordered', index=False)
+        uploaded_df2_html = df2.to_html(classes='table table-bordered', index=False)
 
-        return render_template('index4.html', data_var=uploaded_df_html, data=df.values.tolist(),
-            shipnames=shipnames, colours=colours, enumerate=enumerate)
+        return render_template('index4.html', data_var=uploaded_df_html, data_var2=uploaded_df2_html,
+            data=df.values.tolist(), data2=df2.values.tolist(), shipnames=shipnames, colours=colours,
+            enumerate=enumerate)
     return render_template("index.html")
 
 if __name__ == '__main__':
