@@ -7,7 +7,19 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         table {
-            font-size: 8px;
+            width: 100%;
+            table-layout: auto; /* Makes the table and columns adjust to content */
+	    border: 3px solid black !important; /* Ensure perimeter border is thick and solid */
+            border-collapse: collapse;
+	    font-size: 10px;
+        }
+        td {
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap; /* Prevents text from wrapping */
+        }
+        .flexible {
+            width: auto; /* Column width adjusts to content */
         }
         .container {
             display: flex;
@@ -34,73 +46,43 @@
         #first-column-values {
             margin-top: 20px;
         }
-    </style>
-</head>
-<body>
-    <h1>User Forms</h1>
-    <div class="container">
-        <!-- Form 1 -->
-        <form class="form-container" id="form1" action="/submit_form1" method="post">
-            <h2>User Ship Names</h2>
-            <div class="form-group">
-                <label for="name1">Ship 1 :</label>
-                <input type="text" id="name1" name="name1" required>
-            </div>
-            <div class="form-group">
-                <label for="name2">Ship 2 :</label>
-                <input type="text" id="name2" name="name2">
-            </div>
-            <div class="form-group">
-                <label for="name3">Ship 3 :</label>
-                <input type="text" id="name3" name="name3">
-            </div>
-            <div class="form-group">
-                <label for="name4">Ship 4 :</label>
-                <input type="text" id="name4" name="name4">
-            </div>
-            <div class="form-group">
-                <label for="name5">Ship 5 :</label>
-                <input type="text" id="name5" name="name5">
-            </div>
-            <div class="form-group">
-                <label for="name6">Ship 6 :</label>
-                <input type="text" id="name6" name="name6">
-            </div>
-            <div class="form-group">
-                <label for="name7">Ship 7 :</label>
-                <input type="text" id="name7" name="name7">
-            </div>
-            <div class="form-group">
-                <label for="name8">Ship 8 :</label>
-                <input type="text" id="name8" name="name8">
-            </div>
-            <div class="form-group">
-                <label for="name9">Ship 9 :</label>
-                <input type="text" id="name9" name="name9">
-            </div>
-            <div class="form-group">
-                <label for="name10">Ship 10 :</label>
-                <input type="text" id="name10" name="name10">
-            </div>
-            <button type="submit">Submit</button>
-	</form>
-        <!-- Form 2 -->
-        <form class="form-container" id="form2" onsubmit="return handleSubmit(event, 'form2')" method="post" enctype="multipart/form-data">
-            <h1 class="mb-4">Upload a Text File</h1>
-            <div class="form-group">
-                <input type="file" name="file" class="form-control-file">
-            </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
-        </form>
-    </div>
-    <!-- Output Container -->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uploaded File Content</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        .LightYellow { background-color: LightYellow; }
+	th {
+    	border-bottom: 3px solid black !important; /* Ensure bottom border of header cells is thick and solid */
+	word-wrap: break-word;
+	white-space: normal; /* Enable text wrapping */
+	text-align: center; /* Center-align header text */
+	}
+	th:nth-child(3) { 
+    	border-left: 3px solid black !important; /* Ensure bottom border of header cells is thick and solid */
+	}
+	th:nth-child(6) { 
+    	border-left: 2px solid black !important; /* Ensure bottom border of header cells is thick and solid */
+	}
+	th:nth-child(8) { 
+    	border-left: 2px solid black !important; /* Ensure bottom border of header cells is thick and solid */
+	}
+	th:nth-child(10) { 
+    	border-left: 2px solid black !important; /* Ensure bottom border of header cells is thick and solid */
+	}
+	th:nth-child(12) { 
+    	border-left: 2px solid black !important; /* Ensure bottom border of header cells is thick and solid */
+	}
+	td:nth-child(3) { 
+    	border-left: 3px solid black; /* Set left border of third column to thick */ 
+	}
+	td:nth-child(6) { 
+    	border-left: 2px solid black; /* Set left border of sixth column to thick */ 
+	}
+	td:nth-child(8) { 
+   	 border-left: 2px solid black; /* Set left border of eighth column to thick */ 
+	}
+	td:nth-child(10) { 
+    	border-left: 2px solid black; /* Set left border of tenth column to thick */ 
+	}
+	td:nth-child(12) { 
+   	border-left: 2px solid black; /* Set left border of twelfth column to thick */ 
+	}
+	.LightYellow { background-color: LightYellow; }
         .PapayaWhip { background-color: PapayaWhip; }
         .Moccasin { background-color: Moccasin; }
         .PaleGoldenrod { background-color: PaleGoldenrod; }
@@ -111,41 +93,127 @@
         .LightBlue { background-color: LightBlue; }
         .Cornsilk { background-color: Cornsilk; }
     </style>
+    <script>
+        function sortTable(tableId) {
+            const table = document.getElementById(tableId);
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            // Clear the table body to avoid duplicates
+            tbody.innerHTML = '';
+
+            rows.sort((a, b) => {
+                const col1A = a.cells[0].innerText.trim().toLowerCase();
+                const col1B = b.cells[0].innerText.trim().toLowerCase();
+                const col3A = parseFloat(a.cells[2].innerText.trim());
+                const col3B = parseFloat(b.cells[2].innerText.trim());
+                if (col1A < col1B) return -1;
+                if (col1A > col1B) return 1;
+                if (col3A < col3B) return 1;
+                if (col3A > col3B) return -1;
+                return 0;
+            });
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            sortTable('table1');
+            sortTable('table2');
+        });
+    </script>
 </head>
 <body>
     <div id="output-container">
         <h2 class="mt-5">Uploaded File Content</h2>
         <div class="container mt-1">
-            <div class="table-responsive mt-2">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Ship</th>
-                            <th>Weapon</th>
-                            <th>TotalDmg</th>
-                            <th>AvgDmg</th>
-                            <th>Count</th>
-                            <th>GrazesDmg</th>
-                            <th>GrazesCount</th>
-                            <th>AttacksDmg</th>
-                            <th>AttacksCount</th>
-                            <th>CriticalsDmg</th>
-                            <th>CriticalsCount</th>
-                            <th>SplashesDmg</th>
-                            <th>SplashesCount</th>
+            <!-- First Table --> 
+            <div class="table-responsive mt-2" style="width: 100%;">
+                <table id="table1" class="table table-bordered" style="width: 100%;">
+                    <colgroup> 
+				<col style="width: 20%;"> 
+				<col style="width: 20%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;"> 
+				<col style="width: 5%;">  
+				<col style="width: 5%;"> 
+				<col style="width: 5%;">  
+				<col style="width: 5%;"> 
+			</colgroup>
+			<thead> 
+			    <tr>
+                            <th class="flexible">Ship Name</th>
+                            <th class="flexible">Weapon Type</th>
+                            <th>Total Damage</th>  <!-- Swapped and Renamed -->
+                            <th>Shots Fired</th>                            
+			    <th>Average Damage</th>  <!-- Swapped and Renamed -->
+                            <th>Grazes Damage</th>
+                            <th>Grazes Count</th>
+                            <th>Attacks Damage</th>
+                            <th>Attacks Count</th>
+                            <th>Critical Hits Damage</th>
+                            <th>Critical Hits Count</th>
+                            <th>Splashes Damage</th>
+                            <th>Splashes Count</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in data %}
                             <tr class="{% for i, name in enumerate(shipnames) %}{% if row[0] == name %}{{ colours[i] }}{% endif %}{% endfor %}">
-                                {% for cell in row %}
-                                    <td>{{ cell }}</td>
-                                {% endfor %}
+                                <td>{{ row[0] }}</td>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }}</td>  <!-- Swapped -->
+                                <td>{{ row[4] }}</td>                                
+				<td>{{ row[3] }}</td>  <!-- Swapped -->
+                                <td>{{ row[5] }}</td>
+                                <td>{{ row[6] }}</td>
+                                <td>{{ row[7] }}</td>
+                                <td>{{ row[8] }}</td>
+                                <td>{{ row[9] }}</td>
+                                <td>{{ row[10] }}</td>
+                                <td>{{ row[11] }}</td>
+                                <td>{{ row[12] }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
+            <!-- Second Table -->
+            <div class="table-responsive mt-2" style="width: 50%;">         
+                <h2 class="mt-5">Table2</h2>
+                <table id="table2" class="table table-bordered">
+                    <colgroup>  
+			<col style="width: 150px;"> 
+			<col style="width: 50px;"> 
+			<col style="width: 50px;"> 
+			<col style="width: 50px;"> 
+			<col style="width: 50px;"> 
+		    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Ship Name</th>
+                            <th>Total Damage</th>
+                            <th>Shots Fired</th>                            
+			    <th>Average Damage</th>
+                            <th>% of Total Dmg</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data2 %}
+                            <tr class="{% for i, name in enumerate(shipnames) %}{% if row[0] == name %}{{ colours[i] }}{% endif %}{% endfor %}">
+                                <td>{{ row[0] }}</td>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }}</td>
+                                <td>{{ row[3] }}</td>                                
+				<td>{{ row[4] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+	    </div>
         </div>
     </div>
 </body>
