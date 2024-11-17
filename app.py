@@ -1,5 +1,4 @@
 import math
-
 from flask import Flask, request, render_template, redirect, url_for
 import logging
 import pandas as pd
@@ -15,8 +14,6 @@ pd.set_option('display.max_columns', 3000)
 ALLOWED_EXTENSIONS = {'txt'}
 searchList = ["SPLASHES", "GRAZES", "attacks", "CRITICALS", 'DRAINS', 'RAMS', "GRAPPLES", "HACKS", "TAUNTS", "DEFLECTS"]
 attack_types = ['GRAZES', 'attacks', 'CRITICALS', 'SPLASHES']
-# shipnames = ['Emp-1','Emp-2','Emp-3', 'Emp-4', 'Emp-5', 'Emp-6', 'Emp-7', "Boondog's Het Stinger-I", "Boondog's Striker Gunboat-IV-ULT"]
-#colours=['blue','orange','green','red','purple','brown','pink','gray','olive','cyan']
 colours=['LightYellow','PapayaWhip','Moccasin','PaleGoldenrod','Khaki','Lavender','LightCyan','PaleTurquoise','LightBlue','Cornsilk']
 shipnames = []
 
@@ -106,32 +103,7 @@ def calc_stats(df, shipnames):
 
     df =df[df['Weapon'].str.len() > 0]
     print('print 1.3')
-    # =================================================
-    # Convert DataFrame to List of Lists
-    # list_of_lists = df.values.tolist()
 
-    # Write the List of Lists to a .py File
-    # with open('ListofLists.py', 'w') as file:
-        # file.write('list_of_lists = ' + str(list_of_lists))
-
-
-    # ================================================
-    # ================================================
-    # Copy DataFrame
-    #df_copy = df.copy()
-    #print('print 1.4')
-    # Write the copied DataFrame to a .py file
-    #with open('CopiedDataFrame.py', 'w') as file:
-        #file.write("import pandas as pd\n\n")
-        #file.write("data = [\n")
-        #for row in df_copy.values.tolist():
-            #file.write(f"    {row},\n")
-        #file.write("]\n\n")
-        #file.write("headers = ['Ship', 'Att_Type', 'TotalDmg', 'Weapon']\n\n")
-        #file.write("df_copy = pd.DataFrame(data, columns=headers)\n")
-
-
-    # ================================================
     # Initialize a list to store results for all ships
     all_ships_results = []
     all_ships_results2 = []
@@ -141,7 +113,6 @@ def calc_stats(df, shipnames):
         filtered_df = df[(df['Ship'] == Ship1) & df['Weapon'].notna()]
         if filtered_df.empty:
             continue  # Skip the ship if there are no records
-
 
         # Calculate the total damage, average damage, and count for the current ship
         total_dmg = filtered_df['TotalDmg'].sum()
@@ -160,10 +131,6 @@ def calc_stats(df, shipnames):
         print('print 3')
         # Store the results in a list
         all_ships_results2.append([Ship1, total_dmg, count, avg_dmg, perc_dmg_str])
-
-        # Get unique weapon values, excluding blanks
-        # unique_values = filtered_df['Weapon'].unique().tolist()
-        # remove_blanks = [item for item in unique_values if item]
 
         # Initialize a dictionary to store results for each weapon
         weapon_stats = {}
@@ -184,7 +151,6 @@ def calc_stats(df, shipnames):
                 stats[f'{attack.lower()}_count'] = count
             stats['avg_dmg'] = stats['total_dmg'] // stats['count'] if stats['count'] > 0 else 0
             weapon_stats[weapon] = stats
-
 
         # Create a list of results for the current ship
         results_list = [
@@ -228,14 +194,16 @@ def index():
 
 @app.route('/submit_form1', methods=['POST'])
 def submit_form1():
+
+    # Clear the shipnames list before adding new data
+    shipnames.clear()
+
     # Get form data
     form_data = [request.form.get(f'name{i}') for i in range(1, 11)]
     shipnames.extend(form_data)
     print(shipnames)
 
     return redirect(url_for('upload_file'))
-
-
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
